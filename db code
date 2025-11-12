@@ -1,0 +1,49 @@
+-- Create the database if it doesn't exist
+CREATE DATABASE IF NOT EXISTS flightdb;
+
+-- Use the database
+USE flightdb;
+
+-- Table: admin
+CREATE TABLE IF NOT EXISTS admin (
+    admin_id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(50) NOT NULL -- In a real app, always hash passwords!
+);
+
+-- Table: flight
+CREATE TABLE IF NOT EXISTS flight (
+    flight_id INT PRIMARY KEY AUTO_INCREMENT,
+    flight_number VARCHAR(20) NOT NULL,
+    source VARCHAR(50) NOT NULL,
+    destination VARCHAR(50) NOT NULL,
+    departure_time DATETIME NOT NULL,
+    arrival_time DATETIME NOT NULL,
+    price DOUBLE NOT NULL,
+    total_seats INT NOT NULL,
+    available_seats INT NOT NULL
+);
+
+-- Table: booking
+CREATE TABLE IF NOT EXISTS booking (
+    booking_id INT PRIMARY KEY AUTO_INCREMENT,
+    flight_id INT NOT NULL,
+    user_name VARCHAR(50) NOT NULL, -- Simplified user system as requested
+    seats_booked INT NOT NULL,
+    booking_date DATETIME NOT NULL,
+    FOREIGN KEY (flight_id) REFERENCES flight(flight_id) ON DELETE CASCADE
+);
+
+-- --- SAMPLE DATA ---
+
+-- Insert a default admin user (admin / password)
+INSERT INTO admin (username, password)
+VALUES ('admin', 'password')
+ON DUPLICATE KEY UPDATE password = 'password';
+
+-- Insert sample flights
+INSERT INTO flight (flight_number, source, destination, departure_time, arrival_time, price, total_seats, available_seats)
+VALUES
+('AI-202', 'Delhi', 'Mumbai', '2025-12-10 08:00:00', '2025-12-10 10:15:00', 4500.00, 150, 150),
+('6E-551', 'Mumbai', 'Bangalore', '2025-12-10 12:00:00', '2025-12-10 13:45:00', 3200.00, 180, 180),
+('UK-870', 'Bangalore', 'Delhi', '2025-12-11 15:00:00', '2025-12-11 17:30:00', 5100.00, 120, 120)
